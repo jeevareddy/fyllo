@@ -1,0 +1,24 @@
+name: fyllo
+description: "Fýllo (leaf) is a vibrant and innovative app designed to foster community connections and support sustainable living."
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+environment:
+  sdk: '>=3.2.3 <4.0.0'
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  google_maps_flutter: ^2.5.3 # To load the map view
+  google_maps_cluster_manager: ^3.1.0 # For cluster management
+  flutter_google_maps_webservices: ^1.1.1 # To fetch nearby places
+  google_maps_places_autocomplete_widgets: ^1.2.2 # To autocomplete input
+  provider: ^6.1.1
+  scrollable_positioned_list: ^0.3.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/

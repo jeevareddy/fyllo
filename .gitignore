@@ -48,3 +48,4 @@ lib\api_keys.dart
 lib/api_keys.dart
 .metadata
 .vscode/settings.json
+*.asc

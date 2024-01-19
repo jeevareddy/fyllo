@@ -17,6 +17,13 @@ jobs:
 
       - name: Install dependencies
         run: flutter pub get
+      
+      - name: Prepare debug keystore
+        run: |
+          echo "${{ secrets.LOCAL_PROPERTIES_ENC_BASE64 }}" > local.properties.asc
+          echo "${{ secrets.API_KEYS_DART_ENC_BASE64 }}" > api_keys.dart.asc
+          gpg -d --passphrase "${{ secrets.GPG_PASSPHRASE }}" --batch local.properties.asc > /android/local.properties
+          gpg -d --passphrase "${{ secrets.GPG_PASSPHRASE }}" --batch api_keys.dart.asc > /lib/api_keys.dart
         
       - name: Generate Android
         run: flutter build apk --split-per-abi

@@ -6,8 +6,8 @@ This innovative app, helps you form vibrant local clusters, unlocking collaborat
 Be part of the green revolution — Be Local, Be Sustainable with Fýllo!
 
 # Demo video
+![demo_video-low-res](https://github.com/jeevareddy/fyllo/assets/39630776/8e0e6485-fbd5-4a18-9163-56b877297656)
 
-![demo](https://github.com/jeevareddy/fyllo/blob/main/md_assets/demo_video.mp4?raw=true)
 
 # How to install
 [Download Fýllo](https://github.com/jeevareddy/fyllo/releases)

@@ -33,7 +33,6 @@ class CustomAutoCompleteLocationInput extends StatelessWidget {
             controller?.text = suggestion.formattedAddress ?? "";
             onPlaceSelected(suggestion);
           },
-          componentCountry: 'uk',
           clearButton: const Icon(Icons.clear),
           onClearClick: () {
             onPlaceSelected(null);

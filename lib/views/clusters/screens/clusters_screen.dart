@@ -30,6 +30,7 @@ class _ClustersScreenState extends State<ClustersScreen> {
   GoogleMapController? _mapController;
   final _itemScrollController = ItemScrollController();
   final _itemPositionsListener = ItemPositionsListener.create();
+  bool isFirstBuild = true; // Used to ignore callback during initial build
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +38,7 @@ class _ClustersScreenState extends State<ClustersScreen> {
       body: Consumer<ClusterProvider>(
         builder: (context, cp, child) => Stack(
           children: [
+            //Map
             Padding(
               padding: const EdgeInsets.only(top: 130.0),
               child: GoogleMap(
@@ -62,10 +64,10 @@ class _ClustersScreenState extends State<ClustersScreen> {
                   target: LatLng(widget.area.lat!, widget.area.lng!),
                 ),
                 onMapCreated: (GoogleMapController controller) {
-                  _itemPositionsListener.itemPositions
-                      .addListener(itemPositionsLister);
                   _mapController = controller;
                   fitMapToContents();
+                  _itemPositionsListener.itemPositions
+                      .addListener(itemPositionsLister);
                 },
                 zoomControlsEnabled: false,
               ),
@@ -92,9 +94,7 @@ class _ClustersScreenState extends State<ClustersScreen> {
                 width: double.infinity,
                 height: 130.0,
                 child: cp.isLoading
-                    ? const Center(
-                        child: CustomLoadingIndicator(),
-                      )
+                    ? const Center(child: CustomLoadingIndicator())
                     : (ScrollablePositionedList.builder(
                         itemScrollController: _itemScrollController,
                         itemPositionsListener: _itemPositionsListener,
@@ -102,9 +102,20 @@ class _ClustersScreenState extends State<ClustersScreen> {
                         padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
                         itemCount: cp.clusters.length,
                         itemBuilder: (context, index) {
-                          return ClusterListTile(
-                            key: Key(cp.clusters[index].placeId),
-                            cluster: cp.clusters[index],
+                          return GestureDetector(
+                            onTap: () {
+                              scrollToItem(cp.clusters[index].placeId);
+                              itemPositionsLister(
+                                latitude:
+                                    cp.clusters[index].geometry!.location.lat,
+                                longitude:
+                                    cp.clusters[index].geometry!.location.lng,
+                              );
+                            },
+                            child: ClusterListTile(
+                              key: Key(cp.clusters[index].placeId),
+                              cluster: cp.clusters[index],
+                            ),
                           );
                         },
                       )),
@@ -148,11 +159,36 @@ class _ClustersScreenState extends State<ClustersScreen> {
     );
   }
 
-  void itemPositionsLister() {
+  void itemPositionsLister({double? latitude, double? longitude}) {
+    double zoomLevel = 14.0;
+
+    // Ignore unwanted zoom during initial build
+    if (isFirstBuild) { 
+      isFirstBuild = false;
+      return;
+    }
+
+    if (_mapController == null) return;
+
+
+    //Zoom to marker
+    if (latitude != null && longitude != null) {
+      _mapController!.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(
+            bearing: 0.0,
+            target: LatLng(latitude, longitude),
+            zoom: zoomLevel,
+          ),
+        ),
+      );
+      return;
+    }
+
+    //Zoom to cluster item
     final visibleIndices =
         _itemPositionsListener.itemPositions.value.map((e) => e.index).toList();
-
-    if (visibleIndices.isNotEmpty && _mapController != null) {
+    if (visibleIndices.isNotEmpty) {
       final place = Provider.of<ClusterProvider>(context, listen: false)
           .clusters[visibleIndices.first];
       _mapController!.animateCamera(
@@ -163,7 +199,7 @@ class _ClustersScreenState extends State<ClustersScreen> {
               place.geometry!.location.lat,
               place.geometry!.location.lng,
             ),
-            zoom: 12,
+            zoom: zoomLevel,
           ),
         ),
       );

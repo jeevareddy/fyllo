@@ -11,8 +11,8 @@ dependencies:
   google_maps_cluster_manager: ^3.1.0 # For cluster management
   flutter_google_maps_webservices: ^1.1.1 # To fetch nearby places
   google_maps_places_autocomplete_widgets: ^1.2.2 # To autocomplete input
-  provider: ^6.1.1
-  scrollable_positioned_list: ^0.3.8
+  provider: ^6.1.1 # For state management
+  scrollable_positioned_list: ^0.3.8 # For listening to scrolling list position
 
 dev_dependencies:
   flutter_test:

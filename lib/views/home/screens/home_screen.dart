@@ -23,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Place? _selectedPlace;
   double _mileRadius = 5.0;
 
-  final _initialCenter = const LatLng(37.4219999, -122.0840575);
+  final _initialCenter = const LatLng(51.509865, -0.118092); // London, UK
 
   GoogleMapController? _mapController;
 
@@ -57,11 +57,12 @@ class _HomeScreenState extends State<HomeScreen> {
               },
               initialCameraPosition: CameraPosition(
                 target: _initialCenter,
+                zoom: 6.0,
               ),
               onMapCreated: (GoogleMapController controller) {
                 _mapController = controller;
               },
-              zoomControlsEnabled: true,
+              zoomControlsEnabled: false,
             ),
           ),
 
@@ -96,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   CustomAutoCompleteLocationInput(
                     labelText: "Area",
-                    hintText: "locality, city, state or country",
+                    hintText: "street, city, county in the UK",
                     controller: TextEditingController(
                       text: _selectedPlace?.formattedAddress,
                     ),
@@ -143,9 +144,9 @@ class _HomeScreenState extends State<HomeScreen> {
     Provider.of<ClusterProvider>(context, listen: false).searchNearby(
       lat: _selectedPlace!.lat!,
       lng: _selectedPlace!.lng!,
-      radius: _mileRadius,
+      radius: _mileRadius.mileToMeters(),
     );
-    
+
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) {

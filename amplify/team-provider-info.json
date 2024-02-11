@@ -1,0 +1,33 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-fyllo-dev-155628-authRole",
+      "UnauthRoleArn": "arn:aws:iam::613223836130:role/amplify-fyllo-dev-155628-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::613223836130:role/amplify-fyllo-dev-155628-authRole",
+      "Region": "eu-west-2",
+      "DeploymentBucketName": "amplify-fyllo-dev-155628-deployment",
+      "UnauthRoleName": "amplify-fyllo-dev-155628-unauthRole",
+      "StackName": "amplify-fyllo-dev-155628",
+      "StackId": "arn:aws:cloudformation:eu-west-2:613223836130:stack/amplify-fyllo-dev-155628/1ed4b2f0-c8f6-11ee-8ddf-025182be527b",
+      "AmplifyAppId": "d3fqo4qjf2sfqn",
+      "APIGatewayAuthURL": "https://s3.amazonaws.com/amplify-fyllo-dev-155628-deployment/amplify-cfn-templates/api/APIGatewayAuthStack.json"
+    },
+    "categories": {
+      "auth": {
+        "fyllo745c6a2b": {}
+      },
+      "function": {
+        "racksLambda": {
+          "deploymentBucketName": "amplify-fyllo-dev-155628-deployment",
+          "s3Key": "amplify-builds/racksLambda-694462727254612f6a65-build.zip"
+        }
+      },
+      "storage": {
+        "fyllodb": {}
+      },
+      "api": {
+        "racksApi": {}
+      }
+    }
+  }
+}

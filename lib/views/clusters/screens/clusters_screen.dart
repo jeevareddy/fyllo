@@ -1,9 +1,12 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:fyllo/constants/enums.dart';
 import 'package:fyllo/extensions.dart';
+import 'package:fyllo/models/rack_model.dart';
 import 'package:fyllo/views/clusters/providers/cluster_provider.dart';
 import 'package:fyllo/views/clusters/widgets/cluster_list_tile.dart';
+import 'package:fyllo/views/clusters/widgets/rack_list_tile.dart';
 import 'package:fyllo/widgets/custom_app_bar.dart';
 import 'package:fyllo/widgets/custom_loading_indicator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -17,10 +20,12 @@ class ClustersScreen extends StatefulWidget {
     super.key,
     required this.area,
     required this.mileRadius,
+    required this.exploreMode,
   });
 
   final Place area;
   final double mileRadius;
+  final ExploreMode exploreMode;
 
   @override
   State<ClustersScreen> createState() => _ClustersScreenState();
@@ -32,97 +37,136 @@ class _ClustersScreenState extends State<ClustersScreen> {
   final _itemPositionsListener = ItemPositionsListener.create();
   bool isFirstBuild = true; // Used to ignore callback during initial build
 
+  Set<Marker> getMarkers() {
+    final cp = Provider.of<ClusterProvider>(context, listen: false);
+    if (widget.exploreMode == ExploreMode.shops) {
+      return cp.clusters
+          .map((e) => Marker(
+                markerId: MarkerId(e.placeId),
+                position:
+                    LatLng(e.geometry!.location.lat, e.geometry!.location.lng),
+                onTap: () => scrollToItem(e.placeId),
+              ))
+          .toSet();
+    } else if (widget.exploreMode == ExploreMode.racks) {
+      return cp.racks
+          .map((e) => Marker(
+                markerId: MarkerId(e.id.toString()),
+                position: LatLng(e.lat, e.lng),
+                onTap: () => scrollToItem(e.id.toString()),
+              ))
+          .toSet();
+    }
+    return {};
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Consumer<ClusterProvider>(
-        builder: (context, cp, child) => Stack(
-          children: [
-            //Map
-            Padding(
-              padding: const EdgeInsets.only(top: 130.0),
-              child: GoogleMap(
-                mapType: MapType.normal,
-                markers: cp.clusters
-                    .map((e) => Marker(
-                          markerId: MarkerId(e.placeId),
-                          position: LatLng(e.geometry!.location.lat,
-                              e.geometry!.location.lng),
-                          onTap: () => scrollToItem(e.placeId),
-                        ))
-                    .toSet(),
-                circles: {
-                  Circle(
-                    circleId: const CircleId("mile_radius"),
-                    center: LatLng(widget.area.lat!, widget.area.lng!),
-                    fillColor: Colors.blue.withOpacity(0.2),
-                    strokeColor: Colors.blue.withOpacity(0.4),
-                    radius: widget.mileRadius.mileToMeters(),
-                  )
-                },
-                initialCameraPosition: CameraPosition(
-                  target: LatLng(widget.area.lat!, widget.area.lng!),
+        builder: (context, cp, child) {
+          final resultItems =
+              widget.exploreMode == ExploreMode.shops ? cp.clusters : cp.racks;
+          return Stack(
+            children: [
+              //Map
+              Padding(
+                padding: const EdgeInsets.only(top: 130.0),
+                child: GoogleMap(
+                  mapType: MapType.normal,
+                  markers: getMarkers(),
+                  circles: {
+                    Circle(
+                      circleId: const CircleId("mile_radius"),
+                      center: LatLng(widget.area.lat!, widget.area.lng!),
+                      fillColor: Colors.blue.withOpacity(0.2),
+                      strokeColor: Colors.blue.withOpacity(0.4),
+                      radius: widget.mileRadius.mileToMeters(),
+                    )
+                  },
+                  initialCameraPosition: CameraPosition(
+                    target: LatLng(widget.area.lat!, widget.area.lng!),
+                  ),
+                  onMapCreated: (GoogleMapController controller) {
+                    _mapController = controller;
+                    fitMapToContents();
+                    _itemPositionsListener.itemPositions
+                        .addListener(itemPositionsLister);
+                  },
+                  zoomControlsEnabled: false,
                 ),
-                onMapCreated: (GoogleMapController controller) {
-                  _mapController = controller;
-                  fitMapToContents();
-                  _itemPositionsListener.itemPositions
-                      .addListener(itemPositionsLister);
-                },
-                zoomControlsEnabled: false,
               ),
-            ),
 
-            //Title
-            CustomAppBar(
-              phrase: cp.isLoading
-                  ? "Green gears are turning! We'll be with you in a leafy moment.\nLoading..."
-                  : cp.clusters.isEmpty
-                      ? "Oops! Looks like a leaf got caught in the system. Let's try that again, shall we?"
-                      : "Eureka! Fyllo has blossomed with the local scoop.",
-            ),
+              //Title
+              CustomAppBar(
+                phrase: cp.isLoading
+                    ? "Green gears are turning! We'll be with you in a leafy moment.\nLoading..."
+                    : resultItems.isEmpty
+                        ? "Oops! Looks like a leaf got caught in the system. Let's try that again, shall we?"
+                        : "Eureka! Fyllo has blossomed with the local scoop.",
+              ),
 
-            // Clusters
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.transparent,
-                ),
-                width: double.infinity,
-                height: 130.0,
-                child: cp.isLoading
-                    ? const Center(child: CustomLoadingIndicator())
-                    : (ScrollablePositionedList.builder(
-                        itemScrollController: _itemScrollController,
-                        itemPositionsListener: _itemPositionsListener,
-                        scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
-                        itemCount: cp.clusters.length,
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                            onTap: () {
-                              scrollToItem(cp.clusters[index].placeId);
-                              itemPositionsLister(
-                                latitude:
-                                    cp.clusters[index].geometry!.location.lat,
-                                longitude:
-                                    cp.clusters[index].geometry!.location.lng,
+              // Clusters
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.transparent,
+                  ),
+                  width: double.infinity,
+                  height: 130.0,
+                  child: cp.isLoading
+                      ? const Center(child: CustomLoadingIndicator())
+                      : (ScrollablePositionedList.builder(
+                          itemScrollController: _itemScrollController,
+                          itemPositionsListener: _itemPositionsListener,
+                          scrollDirection: Axis.horizontal,
+                          padding:
+                              const EdgeInsets.only(left: 8.0, bottom: 8.0),
+                          itemCount: resultItems.length,
+                          itemBuilder: (context, index) {
+                            if (resultItems is List<RackModel>) {
+                              return GestureDetector(
+                                onTap: () {
+                                  _itemScrollController.scrollTo(
+                                    duration: const Duration(milliseconds: 500),
+                                    index: index,
+                                  );
+                                  itemPositionsLister(
+                                    latitude: cp.racks[index].lat,
+                                    longitude: cp.racks[index].lng,
+                                  );
+                                },
+                                child: RackListTile(
+                                  key: Key(cp.racks[index].id.toString()),
+                                  rack: cp.racks[index],
+                                ),
                               );
-                            },
-                            child: ClusterListTile(
-                              key: Key(cp.clusters[index].placeId),
-                              cluster: cp.clusters[index],
-                            ),
-                          );
-                        },
-                      )),
-              ),
-            )
-          ],
-        ),
+                            }
+                            return GestureDetector(
+                              onTap: () {
+                                scrollToItem(cp.clusters[index].placeId);
+                                itemPositionsLister(
+                                  latitude:
+                                      cp.clusters[index].geometry!.location.lat,
+                                  longitude:
+                                      cp.clusters[index].geometry!.location.lng,
+                                );
+                              },
+                              child: ClusterListTile(
+                                key: Key(cp.clusters[index].placeId),
+                                cluster: cp.clusters[index],
+                              ),
+                            );
+                          },
+                        )),
+                ),
+              )
+            ],
+          );
+        },
       ),
     );
   }
@@ -163,13 +207,12 @@ class _ClustersScreenState extends State<ClustersScreen> {
     double zoomLevel = 14.0;
 
     // Ignore unwanted zoom during initial build
-    if (isFirstBuild) { 
+    if (isFirstBuild) {
       isFirstBuild = false;
       return;
     }
 
     if (_mapController == null) return;
-
 
     //Zoom to marker
     if (latitude != null && longitude != null) {

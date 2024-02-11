@@ -1,0 +1,14 @@
+{
+  "resourceName": "fyllodb",
+  "tableName": "racks",
+  "partitionKey": {
+    "fieldName": "id",
+    "fieldType": "number"
+  },
+  "sortKey": {
+    "fieldName": "createdTime",
+    "fieldType": "number"
+  },
+  "gsi": [],
+  "triggerFunctions": []
+}

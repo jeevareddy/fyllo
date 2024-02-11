@@ -1,0 +1,1 @@
+enum ExploreMode { shops, racks }

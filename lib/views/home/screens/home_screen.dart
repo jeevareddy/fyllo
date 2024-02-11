@@ -1,6 +1,8 @@
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fyllo/constants/enums.dart';
 import 'package:fyllo/extensions.dart';
 import 'package:fyllo/views/clusters/providers/cluster_provider.dart';
 import 'package:fyllo/views/clusters/screens/clusters_screen.dart';
@@ -26,6 +28,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final _initialCenter = const LatLng(51.509865, -0.118092); // London, UK
 
   GoogleMapController? _mapController;
+
+  ExploreMode _exploreMode = ExploreMode.shops;
 
   @override
   Widget build(BuildContext context) {
@@ -122,12 +126,38 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                   ),
                   const SizedBox(height: 16.0),
-                  ElevatedButton(
-                    onPressed: onExploreNowPressed,
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(50),
-                    ),
-                    child: const Text("EXPLORE NOW"),
+                  Row(
+                    children: [
+                      // Dropdown to select between shops and racks
+                      DropdownButton(
+                        items: const [
+                          DropdownMenuItem(
+                            value: ExploreMode.shops,
+                            child: Icon(CupertinoIcons.shopping_cart),
+                          ),
+                          DropdownMenuItem(
+                            value: ExploreMode.racks,
+                            child: Icon(Icons.directions_bike),
+                          )
+                        ],
+                        value: _exploreMode,
+                        underline: const SizedBox.shrink(),
+                        onChanged: (val) {
+                          if (val != null) {
+                            setState(() => _exploreMode = val);
+                          }
+                        },
+                      ),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: onExploreNowPressed,
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: const Size.fromHeight(50),
+                          ),
+                          child: const Text("EXPLORE NOW"),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -142,6 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (_selectedPlace == null) return;
 
     Provider.of<ClusterProvider>(context, listen: false).searchNearby(
+      mode: _exploreMode,
       lat: _selectedPlace!.lat!,
       lng: _selectedPlace!.lng!,
       radius: _mileRadius.mileToMeters(),
@@ -153,6 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
         return ClustersScreen(
           area: _selectedPlace!,
           mileRadius: _mileRadius,
+          exploreMode: _exploreMode,
         );
       }),
     );

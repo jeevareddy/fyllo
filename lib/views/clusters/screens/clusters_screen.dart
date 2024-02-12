@@ -1,18 +1,19 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:fyllo/constants/enums.dart';
-import 'package:fyllo/extensions.dart';
-import 'package:fyllo/models/rack_model.dart';
-import 'package:fyllo/views/clusters/providers/cluster_provider.dart';
-import 'package:fyllo/views/clusters/widgets/cluster_list_tile.dart';
-import 'package:fyllo/views/clusters/widgets/rack_list_tile.dart';
-import 'package:fyllo/widgets/custom_app_bar.dart';
-import 'package:fyllo/widgets/custom_loading_indicator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_places_autocomplete_widgets/model/place.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+
+import '../../../constants/enums.dart';
+import '../../../extensions.dart';
+import '../../../models/rack_model.dart';
+import '../../../views/clusters/providers/cluster_provider.dart';
+import '../../../views/clusters/widgets/cluster_list_tile.dart';
+import '../../../views/clusters/widgets/rack_list_tile.dart';
+import '../../../widgets/custom_app_bar.dart';
+import '../../../widgets/custom_loading_indicator.dart';
 
 class ClustersScreen extends StatefulWidget {
   static String routeName = "/clusters";

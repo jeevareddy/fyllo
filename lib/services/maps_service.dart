@@ -1,5 +1,6 @@
 import 'package:flutter_google_maps_webservices/places.dart';
-import 'package:fyllo/api_keys.dart';
+
+import '../../api_keys.dart';
 
 class MapsService {
   final _placesSdk = GoogleMapsPlaces(apiKey: mapsApiKey);

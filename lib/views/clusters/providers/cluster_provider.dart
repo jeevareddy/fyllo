@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_google_maps_webservices/places.dart';
-import 'package:fyllo/constants/enums.dart';
-import 'package:fyllo/extensions.dart';
-import 'package:fyllo/models/rack_model.dart';
-import 'package:fyllo/services/maps_service.dart';
-import 'package:fyllo/services/racks_service.dart';
+
+import '../../../constants/enums.dart';
+import '../../../extensions.dart';
+import '../../../models/rack_model.dart';
+import '../../../services/maps_service.dart';
+import '../../../services/racks_service.dart';
 
 class ClusterProvider extends ChangeNotifier {
   bool isLoading = false;

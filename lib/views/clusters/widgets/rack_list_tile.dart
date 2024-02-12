@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fyllo/models/rack_model.dart';
+
+import '../../../models/rack_model.dart';
 
 class RackListTile extends StatelessWidget {
   const RackListTile({super.key, required this.rack});

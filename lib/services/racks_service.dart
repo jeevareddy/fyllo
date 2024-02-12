@@ -2,7 +2,8 @@ import 'dart:convert';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:fyllo/models/rack_model.dart';
+
+import '../../../models/rack_model.dart';
 
 class RacksService {
   final _endpointName = "racks";

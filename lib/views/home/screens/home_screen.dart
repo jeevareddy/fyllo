@@ -2,16 +2,17 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fyllo/constants/enums.dart';
-import 'package:fyllo/extensions.dart';
-import 'package:fyllo/views/clusters/providers/cluster_provider.dart';
-import 'package:fyllo/views/clusters/screens/clusters_screen.dart';
-import 'package:fyllo/views/home/widgets/custom_autocomplete_location_input.dart';
-import 'package:fyllo/widgets/custom_app_bar.dart';
-import 'package:fyllo/widgets/custom_slider_input.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_places_autocomplete_widgets/model/place.dart';
 import 'package:provider/provider.dart';
+
+import '../../../constants/enums.dart';
+import '../../../extensions.dart';
+import '../../../views/clusters/providers/cluster_provider.dart';
+import '../../../views/clusters/screens/clusters_screen.dart';
+import '../../../views/home/widgets/custom_autocomplete_location_input.dart';
+import '../../../widgets/custom_app_bar.dart';
+import '../../../widgets/custom_slider_input.dart';
 
 class HomeScreen extends StatefulWidget {
   static String routeName = "/home";

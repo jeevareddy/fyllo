@@ -1,13 +1,14 @@
+import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/material.dart';
-import 'package:fyllo/amplifyconfiguration.dart';
-import 'package:fyllo/views/clusters/providers/cluster_provider.dart';
-import 'package:fyllo/views/home/screens/home_screen.dart';
-import 'package:fyllo/views/splash_screen.dart';
 import 'package:provider/provider.dart';
+
+import 'amplifyconfiguration.dart';
+import 'views/clusters/providers/cluster_provider.dart';
+import 'views/home/screens/home_screen.dart';
+import 'views/splash_screen.dart';
 
 void main() {
   runApp(const Fyllo());

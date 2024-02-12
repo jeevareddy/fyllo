@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fyllo/widgets/custom_loading_indicator.dart';
+
+import '../widgets/custom_loading_indicator.dart';
 
 class SplashScreen extends StatefulWidget {
   static String routeName = "/";
